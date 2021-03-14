@@ -69,8 +69,10 @@ class Login extends Component {
       try {
         const authRef = await this.props.firebase.signInWithEmailAndPassword(email.value, password)
         const userDoc = await this.props.firebase.user(authRef.user.uid)
+
         const user = await userDoc.get()
 
+        // console.log(authRef, user);
         this.redirectToLandingPage(user.data())
         this.props.history.push(PATHS.flights)
       } catch (error) {

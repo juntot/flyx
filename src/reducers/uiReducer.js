@@ -71,18 +71,12 @@ export default (
           return data;
         });
 
-        let filtered = state.filteredFlights.map(data=>{
-          if(data.date === action.data.date){
-            data.current += 1;
-          }
-          return data;
-        });
 
         let sortedState1 = flights.sort(function(a, b) {
           return b.current - a.current;
         });
 
-        let sortedState2 = filtered.sort(function(a, b) {
+        let sortedState2 = flights.sort(function(a, b) {
           return b.current - a.current;
         });
 

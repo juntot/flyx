@@ -35,11 +35,14 @@ class Flights extends Component {
 
     flightsRef.onSnapshot(snapshot => {
       let data = snapshot.docs;
+
       let newState = [];
-      data.map(flight=>{
-        newState.push(flight.data());
+      data.forEach(val => {
+        let data = val.data();
+        newState.push({...data, id: val.id});
       });
 
+      // console.log(data, newState);
 
       let sortedState = newState.sort(function(a, b) {
         return b.current - a.current;
@@ -56,6 +59,7 @@ class Flights extends Component {
 
   }
 
+
   render() {
     const { flights, openFlight } = this.state
     return (
@@ -71,7 +75,7 @@ class Flights extends Component {
   renderFlightCards(flights) {
     if (flights) {
       return flights.map((flight) => {
-        return <FlightCard details={flight} />
+        return <FlightCard details={flight} deleteFlights={this.deleteFlights.bind(this)}/>
       })
     }
   }
@@ -79,15 +83,23 @@ class Flights extends Component {
   loadFlights(val){
     this.props.loadFlights(val)
   }
+
+  deleteFlights(val){
+    this.props.firebase.removePost(this.props.user, val.id)
+  }
+
+
+
 }
 
 const condition = authUser => !!authUser;
 
 
 const mapStateToProps = (state) => {
-
   return {
-      flights: state.ui.filteredFlights
+      flights: state.ui.filteredFlights,
+      user: state.auth.user
+      // userId: state.auth.user.uid
     }
 }
 
@@ -105,4 +117,4 @@ export default connect(mapStateToProps, mapDispatchToProps)(
     withRouter,
     withFirebase,
     withAuthorization(condition),
-  )(Flights))
+  )(withFirebase(Flights)))

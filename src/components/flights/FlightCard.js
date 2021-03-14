@@ -10,6 +10,8 @@ import { Overlay } from '.'
 import { grey } from '@material-ui/core/colors'
 import { uiAction } from '../../actions';
 import {EditFlight } from '.'
+import { withFirebase } from '../../firebase'
+
 const cardHeight = 300
 const cardWidth = 236
 
@@ -89,11 +91,12 @@ class FlightCard extends Component {
   }
 
   addVote(obj){
-    this.props.addVote(obj);
+    this.props.firebase.addVote(obj);
+    // this.props.addVote(obj);
   }
 
   delete(obj){
-    this.props.delete(obj);
+    this.props.deleteFlights(obj)
 
   }
 
@@ -182,4 +185,4 @@ const mapDispatchToProps = (dispatch) => {
 
 
 
-export default connect(null, mapDispatchToProps)(FlightCard)
+export default connect(null, mapDispatchToProps)(withFirebase(FlightCard))

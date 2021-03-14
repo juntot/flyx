@@ -62,8 +62,23 @@ class Firebase {
   }
 
   removePost = async (uid, postid) => {
-    const user = await this.user(uid)
-    return await user.update({ posts: firestore.FieldValue.arrayRemove(postid) })
+    this.db.collection("flights").doc(postid).delete();
+  }
+
+  updatePost = async (post) =>{
+
+    // console.log(new Date(post.date));
+    this.db.collection("flights").doc(post.id).update({
+        date: post.date,
+        destination: post.dest,
+        origin: post.origin,
+    });
+  }
+
+  addVote = async (post) =>{
+    this.db.collection("flights").doc(post.id).update({
+      current: post.current + 1
+    });
   }
 
   flights = () => {

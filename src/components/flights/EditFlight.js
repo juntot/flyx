@@ -98,7 +98,7 @@ class EditFlight extends Component {
                 format='LL'
                 value={selected.date}
                 onChange={(value) => this.setState({ date: value })}
-                disabled
+                // disabled
               />
             </MuiPickersUtilsProvider>
           </div>
@@ -109,7 +109,7 @@ class EditFlight extends Component {
                 variant={success ? "outlined" : "contained"}
                 color={success ? "secondary" : "primary"}
                 disabled={loading}
-                onClick={() => this.updateFlight(orgAirport, destAirport, selected.date)}
+                onClick={() => this.updateFlight(orgAirport, destAirport, this.state.date, selected.id)}
               >
                 {success ? 'UPDATED' : 'UPDATE'}
                 {loading && <CircularProgress size={24} style={styles.buttonProgress} />}
@@ -121,14 +121,14 @@ class EditFlight extends Component {
     )
   }
 
-  async updateFlight(origin, destination, date) {
+  async updateFlight(origin, destination, date, id) {
     if (!this.state.success) {
       if (origin && destination && date) {
 
 
         this.setState({ loading: true })
 
-        console.log('origin',origin, 'destination',destination, 'date', date);
+
         // const flightsRef = this.props.firebase.flights()
         // const flightRef = await flightsRef.doc()
         // const userRef = await this.props.firebase.user(this.props.userId)
@@ -141,14 +141,22 @@ class EditFlight extends Component {
         //   poster: userRef
         // })
         // await this.props.firebase.addPost(this.props.userId, flightRef)
-        let obj = {origin: origin, dest: destination, date: date};
-        this.props.editFlight(obj);
+        let obj = {
+            origin: this.getIata(origin),
+            dest: this.getIata(destination),
+            date: moment(date).startOf('day').toDate().toString(),
+            id: id
+          };
+        this.edit_flight(obj);
         this.setState({ loading: false, success: true });
         this.handleClose();
       }
     }
   }
 
+  edit_flight(obj){
+    this.props.firebase.updatePost(obj);
+  }
 
   async postFlight(origin, destination, date) {
     if (!this.state.success) {

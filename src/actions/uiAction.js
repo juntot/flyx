@@ -6,6 +6,7 @@ export default {
   searchBlur(keyword) {
     return dispatch => dispatch({ type: ACTION_TYPES.ui.blurSearch , data: keyword})
   },
+
   loadFlights(val){
     return dispatch => dispatch({ type: ACTION_TYPES.ui.loadFlights , data: val})
   },
